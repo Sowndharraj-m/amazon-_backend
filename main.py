@@ -1,14 +1,22 @@
 from fastapi import FastAPI
-
-from db import engine
-import os
+from fastapi.middleware.cors import CORSMiddleware
+from db import get_db,DATABASE_URL
+from sqlalchemy import create_engine
 from models import Base
+import os
 app = FastAPI()
 
-
+#cors
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Create database tables if they don't exist
-Base.metadata.create_all(bind=engine)
+engine = create_engine(DATABASE_URL)
 
 @app.get("/")
 def read_root():
